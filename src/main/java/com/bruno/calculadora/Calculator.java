@@ -23,4 +23,10 @@ public class Calculator {
         return (int) (gamepassRobux * 0.7);
     }
 
+    public int calculatePriceFromGamepass(int gamepassRobux, Seller seller) {
+        double sellerPrice = seller.getPricePer80Robux();
+        double exactPrice = ( gamepassRobux * sellerPrice) / 80.0;
+        return (int) Math.round(exactPrice);
+    }
+
 }
