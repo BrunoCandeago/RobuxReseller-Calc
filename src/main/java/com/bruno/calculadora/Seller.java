@@ -2,9 +2,9 @@ package com.bruno.calculadora;
 
 public class Seller {
     private String name;
-    private Double pricePer80Robux; // Precio por 80 robux
+    private double pricePer80Robux; // Precio por 80 robux
 
-    public Seller(String name, Double pricePer80Robux) {
+    public Seller(String name, double pricePer80Robux) {
         this.name = name;
         this.pricePer80Robux = pricePer80Robux;
 
@@ -18,11 +18,11 @@ public class Seller {
         this.name = name;
     }
 
-    public Double getPricePer80Robux() {
+    public double getPricePer80Robux() {
         return pricePer80Robux;
     }
 
-    public void setPricePer80Robux(Double pricePer80Robux) {
+    public void setPricePer80Robux(double pricePer80Robux) {
         this.pricePer80Robux = pricePer80Robux;
     }
 }
