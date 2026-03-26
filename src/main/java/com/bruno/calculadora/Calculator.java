@@ -17,4 +17,10 @@ public class Calculator {
         return (int) Math.round(exactPrice);
     }
 
+    // ESCENARIO 2: El cliente ingresa de cuánto es el PASE
+
+    public int calculateCleanFromGamepass(int gamepassRobux) {
+        return (int) (gamepassRobux * 0.7);
+    }
+
 }
