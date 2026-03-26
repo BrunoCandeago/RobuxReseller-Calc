@@ -2,6 +2,8 @@ package com.bruno.calculadora;
 
 public class Calculator {
 
+    // ESCENARIO 1: El cliente ingresa cuántos Robux LIMPIOS quiere (Llegan)
+
     public int calculateGamepassFromClean(int cleanRobux) {
         double gamepassRobux = cleanRobux / 0.7;
         return (int) Math.ceil(gamepassRobux);
