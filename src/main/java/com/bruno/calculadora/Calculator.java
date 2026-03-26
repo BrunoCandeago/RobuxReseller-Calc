@@ -37,4 +37,9 @@ public class Calculator {
         return (int) Math.floor(exactPrice);
     }
 
+    public int calculateCleanFromPrice(double priceInPesos, Seller seller) {
+        int gamepassAmount = calculateGamepassFromPrice(priceInPesos, seller);
+        return calculateCleanFromGamepass(gamepassAmount);
+    }
+
 }
