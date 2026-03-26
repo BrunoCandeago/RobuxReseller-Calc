@@ -29,4 +29,12 @@ public class Calculator {
         return (int) Math.round(exactPrice);
     }
 
+    // ESCENARIO 3: El cliente ingresa cuánta PLATA (Pesos) tiene
+
+    public int calculateGamepassFromPrice(double priceInPesos, Seller seller) {
+        double sellerPrice = seller.getPricePer80Robux();
+        double exactPrice = ( priceInPesos * 80.0 ) / sellerPrice;
+        return (int) Math.floor(exactPrice);
+    }
+
 }
