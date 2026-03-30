@@ -1,19 +1,70 @@
 package com.bruno.calculadora;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 public class Main {
     static void main() {
-        Calculator calc = new Calculator();
 
-        Seller seller = new Seller("bruno", 1100.0);
+        File archivoFisico = new File("config.properties");
 
-        // Prueba Escenario 1: Quiero 80 limpios
-        System.out.println("Para 80 limpios: Pase de " + calc.calculateGamepassFromClean(80));
+        if (!archivoFisico.exists()) {
+            System.out.println("No se encontro el archivo. Creando configuracion por defecto...");
+            try {
+                FileWriter escritor = new FileWriter(archivoFisico);
+                escritor.write("seller1.name=Base\n");
+                escritor.write("seller1.pricePer80Robux=1100.0\n");
+                escritor.close();
+            } catch (IOException e) {
+                System.out.println("Error al escribir el archivo.");
+                System.exit(1);
+            }
+        }
 
-        // Prueba Escenario 2: Puse el pase a 115
-        System.out.println("Si el pase es 115: Cobro " + calc.calculatePriceFromGamepass(115, seller) + " pesos");
+        Properties config = new Properties();
+        List<Seller> listaVendedores = new ArrayList<>();
 
-        // Prueba Escenario 3: El cliente tiene 2000 pesos
-        System.out.println("Con 2000 pesos: Le doy un pase de " + calc.calculateGamepassFromPrice(2000, seller));
+        try {
+            FileInputStream archivo = new FileInputStream("config.properties");
+            config.load(archivo);
+            archivo.close();
+
+            int i = 1;
+
+            while (true) {
+                String nombre = config.getProperty("seller" + i + ".name");
+                String priceStr = config.getProperty("seller" + i + ".pricePer80Robux");
+
+                if (nombre == null || priceStr == null) {
+                    break;
+                }
+
+                double pricePer80Robux = Double.parseDouble(priceStr);
+                Seller seller = new Seller(nombre, pricePer80Robux);
+
+                listaVendedores.add(seller);
+
+                i++;
+            }
+
+            System.out.println("Vendedores cargados con exito");
+
+        } catch (IOException e) {
+            System.out.println("Error al cargar el archivo de configuraciones");
+            System.exit(1);
+        }
+
+        System.out.println("Vendedores disponibles:");
+        for (Seller seller : listaVendedores) {
+            System.out.println(seller.getName() + " " + seller.getPricePer80Robux());
+        }
+
+
     }
 
     }
