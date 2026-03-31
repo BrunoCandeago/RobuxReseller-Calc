@@ -64,7 +64,7 @@ public class Main {
             System.out.println(seller.getName() + " " + seller.getPricePer80Robux());
         }
 
-    MainFrame mainFrame = new MainFrame();
+    MainFrame mainFrame = new MainFrame(listaVendedores);
 
     mainFrame.setVisible(true);
 

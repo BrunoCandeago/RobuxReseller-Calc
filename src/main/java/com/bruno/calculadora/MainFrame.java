@@ -1,17 +1,31 @@
 package com.bruno.calculadora;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.util.List;
 
 public class MainFrame extends JFrame {
 
-    public MainFrame() {
+    private JTextField fieldClean;
+    private JTextField fieldGamepass;
+    private JTextField fieldPrice;
+
+    private List<Seller> listaVendedores;
+
+    private boolean calculando = false;
+
+    public MainFrame(List<Seller> listaVendedores) {
+        this.listaVendedores = listaVendedores;
+
         setTitle("RobuxReseller Calc");
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         initUI();
+        initListeners();
     }
 
     private void initUI() {
@@ -21,13 +35,13 @@ public class MainFrame extends JFrame {
         panel.setLayout(new GridLayout(3, 2, 10, 10));
 
         JLabel labelClean = new JLabel("Robux limpios: ");
-        JTextField fieldClean = new JTextField(10);
+        fieldClean = new JTextField(10);
 
         JLabel labelGamepass = new JLabel("Robux gamepass: ");
-        JTextField fieldGamepass = new JTextField(10);
+        fieldGamepass = new JTextField(10);
 
         JLabel labelPrice = new JLabel("Robux precio: ");
-        JTextField fieldPrice = new JTextField(10);
+        fieldPrice = new JTextField(10);
 
 
         panel.add(labelClean);
@@ -41,6 +55,131 @@ public class MainFrame extends JFrame {
 
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panel, BorderLayout.NORTH);
+    }
+
+    private void initListeners() {
+        DocumentListener documentListenerClean = new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {}
+            public void insertUpdate(DocumentEvent e) {
+                actualizarDesdeLimpios();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                actualizarDesdeLimpios();
+            }
+        };
+
+        DocumentListener documentListenerGamepass = new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {}
+            public void insertUpdate(DocumentEvent e) {
+                actualizarDesdeGamepass();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                actualizarDesdeGamepass();
+            }
+        };
+
+        DocumentListener documentListenerPrice = new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {}
+            public void insertUpdate(DocumentEvent e) {
+                actualizarDesdePrecio();
+            }
+            public void removeUpdate(DocumentEvent e) {
+                actualizarDesdePrecio();
+            }
+        };
+
+
+        fieldClean.getDocument().addDocumentListener(documentListenerClean);
+        fieldGamepass.getDocument().addDocumentListener(documentListenerGamepass);
+        fieldPrice.getDocument().addDocumentListener(documentListenerPrice);
+    }
+
+    private void actualizarDesdeLimpios() {
+        if (calculando) {
+            return;
+        }
+
+        SwingUtilities.invokeLater(() -> {
+        try {
+
+            calculando = true;
+
+            int textClean = Integer.parseInt(fieldClean.getText());
+            Calculator calculator = new Calculator();
+            Seller actualSeller = listaVendedores.get(0);
+
+            int resultadoGamepass = calculator.calculateGamepassFromClean(textClean);
+            int resultadoPrecio = calculator.calculatePriceFromClean(textClean, actualSeller);
+
+            fieldGamepass.setText(String.valueOf(resultadoGamepass));
+            fieldPrice.setText(String.valueOf(resultadoPrecio));
+
+        } catch (NumberFormatException ex) {
+            fieldGamepass.setText("");
+            fieldPrice.setText("");
+        } finally {
+            calculando = false;
+        }
+    });
+        }
+
+    private void actualizarDesdeGamepass() {
+        if (calculando) {
+            return;
+        }
+
+        SwingUtilities.invokeLater(() -> {
+
+            try {
+
+                calculando = true;
+
+                int textGamepass = Integer.parseInt(fieldGamepass.getText());
+                Calculator calculator = new Calculator();
+                Seller actualSeller = listaVendedores.get(0);
+
+                int resultadoClean = calculator.calculateCleanFromGamepass(textGamepass);
+                int resultadoPrecio = calculator.calculatePriceFromGamepass(textGamepass, actualSeller);
+
+                fieldClean.setText(String.valueOf(resultadoClean));
+                fieldPrice.setText(String.valueOf(resultadoPrecio));
+
+            } catch (NumberFormatException ex) {
+                fieldClean.setText("");
+                fieldPrice.setText("");
+            } finally {
+                calculando = false;
+            }
+        });
+    }
+
+    private void actualizarDesdePrecio() {
+        if (calculando) {
+            return;
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            try {
+
+                calculando = true;
+
+                int textPrice = Integer.parseInt(fieldPrice.getText());
+                Calculator calculator = new Calculator();
+                Seller actualSeller = listaVendedores.get(0);
+
+                int resultadoGamepass = calculator.calculateGamepassFromPrice(textPrice, actualSeller);
+                int resultadoClean = calculator.calculateCleanFromPrice(textPrice, actualSeller);
+
+                fieldGamepass.setText(String.valueOf(resultadoGamepass));
+                fieldClean.setText(String.valueOf(resultadoClean));
+
+            } catch (NumberFormatException ex) {
+                fieldGamepass.setText("");
+                fieldClean.setText("");
+            } finally {
+                calculando = false;
+            }
+        });
     }
 
 }
