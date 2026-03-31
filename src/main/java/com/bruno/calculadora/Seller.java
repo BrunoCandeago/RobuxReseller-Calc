@@ -25,4 +25,9 @@ public class Seller {
     public void setPricePer80Robux(double pricePer80Robux) {
         this.pricePer80Robux = pricePer80Robux;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

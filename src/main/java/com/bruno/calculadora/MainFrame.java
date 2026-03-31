@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class MainFrame extends JFrame {
@@ -11,6 +13,7 @@ public class MainFrame extends JFrame {
     private JTextField fieldClean;
     private JTextField fieldGamepass;
     private JTextField fieldPrice;
+    private JComboBox<Seller> sellerBox;
 
     private List<Seller> listaVendedores;
 
@@ -32,7 +35,7 @@ public class MainFrame extends JFrame {
         setLayout(new BorderLayout(10, 10));
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 2, 10, 10));
+        panel.setLayout(new GridLayout(4, 2, 10, 10));
 
         JLabel labelClean = new JLabel("Robux limpios: ");
         fieldClean = new JTextField(10);
@@ -46,6 +49,13 @@ public class MainFrame extends JFrame {
         fieldPrice = new JTextField(10);
         ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
 
+        JLabel labelSeller = new JLabel("Robux seller: ");
+
+        sellerBox = new JComboBox<>();
+        for (Seller s : listaVendedores) {
+            sellerBox.addItem(s);
+        }
+
 
         panel.add(labelClean);
         panel.add(fieldClean);
@@ -55,6 +65,9 @@ public class MainFrame extends JFrame {
 
         panel.add(labelPrice);
         panel.add(fieldPrice);
+
+        panel.add(labelSeller);
+        panel.add(sellerBox);
 
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panel, BorderLayout.NORTH);
@@ -91,10 +104,17 @@ public class MainFrame extends JFrame {
             }
         };
 
+        ActionListener actionListenerBox = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actualizarDesdeLimpios();
+            }
+        };
 
         fieldClean.getDocument().addDocumentListener(documentListenerClean);
         fieldGamepass.getDocument().addDocumentListener(documentListenerGamepass);
         fieldPrice.getDocument().addDocumentListener(documentListenerPrice);
+        sellerBox.addActionListener(actionListenerBox);
     }
 
     private void actualizarDesdeLimpios() {
@@ -109,7 +129,7 @@ public class MainFrame extends JFrame {
 
             long textClean = Long.parseLong(fieldClean.getText());
             Calculator calculator = new Calculator();
-            Seller actualSeller = listaVendedores.get(0);
+            Seller actualSeller = (Seller) sellerBox.getSelectedItem();
 
             long resultadoGamepass = calculator.calculateGamepassFromClean(textClean);
             long resultadoPrecio = calculator.calculatePriceFromClean(textClean, actualSeller);
@@ -139,7 +159,7 @@ public class MainFrame extends JFrame {
 
                 long textGamepass = Long.parseLong(fieldGamepass.getText());
                 Calculator calculator = new Calculator();
-                Seller actualSeller = listaVendedores.get(0);
+                Seller actualSeller = (Seller) sellerBox.getSelectedItem();
 
                 long resultadoClean = calculator.calculateCleanFromGamepass(textGamepass);
                 long resultadoPrecio = calculator.calculatePriceFromGamepass(textGamepass, actualSeller);
@@ -168,7 +188,7 @@ public class MainFrame extends JFrame {
 
                 long textPrice = Long.parseLong(fieldPrice.getText());
                 Calculator calculator = new Calculator();
-                Seller actualSeller = listaVendedores.get(0);
+                Seller actualSeller = (Seller) sellerBox.getSelectedItem();
 
                 long resultadoGamepass = calculator.calculateGamepassFromPrice(textPrice, actualSeller);
                 long resultadoClean = calculator.calculateCleanFromPrice(textPrice, actualSeller);
