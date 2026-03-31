@@ -104,12 +104,12 @@ public class MainFrame extends JFrame {
 
             calculando = true;
 
-            int textClean = Integer.parseInt(fieldClean.getText());
+            long textClean = Long.parseLong(fieldClean.getText());
             Calculator calculator = new Calculator();
             Seller actualSeller = listaVendedores.get(0);
 
-            int resultadoGamepass = calculator.calculateGamepassFromClean(textClean);
-            int resultadoPrecio = calculator.calculatePriceFromClean(textClean, actualSeller);
+            long resultadoGamepass = calculator.calculateGamepassFromClean(textClean);
+            long resultadoPrecio = calculator.calculatePriceFromClean(textClean, actualSeller);
 
             fieldGamepass.setText(String.valueOf(resultadoGamepass));
             fieldPrice.setText(String.valueOf(resultadoPrecio));
@@ -134,12 +134,12 @@ public class MainFrame extends JFrame {
 
                 calculando = true;
 
-                int textGamepass = Integer.parseInt(fieldGamepass.getText());
+                long textGamepass = Long.parseLong(fieldGamepass.getText());
                 Calculator calculator = new Calculator();
                 Seller actualSeller = listaVendedores.get(0);
 
-                int resultadoClean = calculator.calculateCleanFromGamepass(textGamepass);
-                int resultadoPrecio = calculator.calculatePriceFromGamepass(textGamepass, actualSeller);
+                long resultadoClean = calculator.calculateCleanFromGamepass(textGamepass);
+                long resultadoPrecio = calculator.calculatePriceFromGamepass(textGamepass, actualSeller);
 
                 fieldClean.setText(String.valueOf(resultadoClean));
                 fieldPrice.setText(String.valueOf(resultadoPrecio));
@@ -163,12 +163,12 @@ public class MainFrame extends JFrame {
 
                 calculando = true;
 
-                int textPrice = Integer.parseInt(fieldPrice.getText());
+                long textPrice = Long.parseLong(fieldPrice.getText());
                 Calculator calculator = new Calculator();
                 Seller actualSeller = listaVendedores.get(0);
 
-                int resultadoGamepass = calculator.calculateGamepassFromPrice(textPrice, actualSeller);
-                int resultadoClean = calculator.calculateCleanFromPrice(textPrice, actualSeller);
+                long resultadoGamepass = calculator.calculateGamepassFromPrice(textPrice, actualSeller);
+                long resultadoClean = calculator.calculateCleanFromPrice(textPrice, actualSeller);
 
                 fieldGamepass.setText(String.valueOf(resultadoGamepass));
                 fieldClean.setText(String.valueOf(resultadoClean));
