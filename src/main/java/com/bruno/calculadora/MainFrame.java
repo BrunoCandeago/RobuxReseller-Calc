@@ -36,12 +36,15 @@ public class MainFrame extends JFrame {
 
         JLabel labelClean = new JLabel("Robux limpios: ");
         fieldClean = new JTextField(10);
+        ((javax.swing.text.AbstractDocument) fieldClean.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
 
         JLabel labelGamepass = new JLabel("Robux gamepass: ");
         fieldGamepass = new JTextField(10);
+        ((javax.swing.text.AbstractDocument) fieldGamepass.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
 
         JLabel labelPrice = new JLabel("Robux precio: ");
         fieldPrice = new JTextField(10);
+        ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
 
 
         panel.add(labelClean);
