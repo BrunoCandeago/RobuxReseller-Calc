@@ -15,4 +15,20 @@ This application solves that problem by automating the math. You simply type the
 
 ## 🛠️ Built With
 
-* **Java** * **Java Swing** (GUI)
+* **Java**
+* **Java Swing** (GUI)
+
+## 🚀 Roadmap (Version 1.0)
+
+> *This project is currently under active development. Below is the plan for the upcoming releases.*
+
+- [x] Core calculation engine (Gamepass/Clean/Price)
+- [x] Input validation and overflow protection
+- [x] Dynamic seller dropdown integration
+- [ ] Add "Copy to Clipboard" buttons for quick chatting
+- [ ] Modernize UI
+- [ ] Package release as a standalone `.exe` for Windows
+
+## 🔮 Future Scope (Backlog)
+
+* **Tiered Pricing System:** Implement logic to automatically apply bulk discounts and custom rates based on transaction volume.
