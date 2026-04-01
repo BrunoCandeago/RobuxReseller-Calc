@@ -25,7 +25,7 @@ This application solves that problem by automating the math. You simply type the
 - [x] Core calculation engine (Gamepass/Clean/Price)
 - [x] Input validation and overflow protection
 - [x] Dynamic seller dropdown integration
-- [ ] Add "Copy to Clipboard" buttons for quick chatting
+- [ ] Add "Copy to Clipboard" buttons
 - [ ] Modernize UI
 - [ ] Package release as a standalone `.exe` for Windows
 
