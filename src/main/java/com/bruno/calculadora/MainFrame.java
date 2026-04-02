@@ -14,6 +14,7 @@ public class MainFrame extends JFrame {
     private JTextField fieldGamepass;
     private JTextField fieldPrice;
     private JComboBox<Seller> sellerBox;
+    private JButton btnAddSeller;
 
     private List<Seller> listaVendedores;
 
@@ -35,7 +36,7 @@ public class MainFrame extends JFrame {
         setLayout(new BorderLayout(10, 10));
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2, 10, 10));
+        panel.setLayout(new GridLayout(5, 2, 10, 10));
 
         JLabel labelClean = new JLabel("Robux limpios: ");
         fieldClean = new JTextField(10);
@@ -56,6 +57,8 @@ public class MainFrame extends JFrame {
             sellerBox.addItem(s);
         }
 
+        btnAddSeller = new JButton("Add Seller");
+
 
         panel.add(labelClean);
         panel.add(fieldClean);
@@ -68,6 +71,8 @@ public class MainFrame extends JFrame {
 
         panel.add(labelSeller);
         panel.add(sellerBox);
+
+        panel.add(btnAddSeller);
 
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panel, BorderLayout.NORTH);
@@ -111,10 +116,17 @@ public class MainFrame extends JFrame {
             }
         };
 
+        ActionListener actionListenerSeller = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {addSeller();}
+        };
+
         fieldClean.getDocument().addDocumentListener(documentListenerClean);
         fieldGamepass.getDocument().addDocumentListener(documentListenerGamepass);
         fieldPrice.getDocument().addDocumentListener(documentListenerPrice);
         sellerBox.addActionListener(actionListenerBox);
+        btnAddSeller.addActionListener(actionListenerSeller);
+
     }
 
     private void actualizarDesdeLimpios() {
@@ -203,6 +215,23 @@ public class MainFrame extends JFrame {
                 calculando = false;
             }
         });
+    }
+
+    private void addSeller() {
+        AddSellerDialog sellerDialog = new AddSellerDialog(this, true, listaVendedores.size() + 1);
+        sellerDialog.setVisible(true);
+
+        if (sellerDialog.isSaved()) {
+            String newName = sellerDialog.getSellerName();
+            String newPrice = sellerDialog.getSellerPrice();
+
+            double newPriceDouble = Double.parseDouble(newPrice);
+
+            Seller newSeller = new Seller(newName, newPriceDouble);
+
+            listaVendedores.add(newSeller);
+            sellerBox.addItem(newSeller);
+        }
     }
 
 }
