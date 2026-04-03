@@ -61,6 +61,7 @@ public class Main {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not read config.properties", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        list.sort(java.util.Comparator.comparing(Seller::getName));
         return list;
     }
 }
