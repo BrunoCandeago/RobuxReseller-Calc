@@ -28,6 +28,6 @@ public class Seller {
 
     @Override
     public String toString() {
-        return name + " ($" + pricePer80Robux + ")";
+        return String.format("%s ($%.2f)", name, pricePer80Robux);
     }
 }
