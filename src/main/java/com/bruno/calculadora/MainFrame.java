@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -15,6 +17,9 @@ public class MainFrame extends JFrame {
     private JTextField fieldPrice;
     private JComboBox<Seller> sellerBox;
     private JButton btnAddSeller;
+    private JButton btnCopyClean;
+    private JButton btnCopyGamepass;
+    private JButton btnCopyPrice;
 
     private List<Seller> listaVendedores;
 
@@ -42,13 +47,31 @@ public class MainFrame extends JFrame {
         fieldClean = new JTextField(10);
         ((javax.swing.text.AbstractDocument) fieldClean.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
 
+        btnCopyClean = new JButton("Copy");
+
+        JPanel wrapClean = new JPanel(new BorderLayout(5, 0));
+        wrapClean.add(fieldClean, BorderLayout.CENTER);
+        wrapClean.add(btnCopyClean, BorderLayout.EAST);
+
         JLabel labelGamepass = new JLabel("Robux gamepass: ");
         fieldGamepass = new JTextField(10);
         ((javax.swing.text.AbstractDocument) fieldGamepass.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
 
+        btnCopyGamepass = new JButton("Copy");
+
+        JPanel wrapGamepass = new JPanel(new BorderLayout(5, 0));
+        wrapGamepass.add(fieldGamepass, BorderLayout.CENTER);
+        wrapGamepass.add(btnCopyGamepass, BorderLayout.EAST);
+
         JLabel labelPrice = new JLabel("Robux precio: ");
         fieldPrice = new JTextField(10);
         ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
+
+        btnCopyPrice = new JButton("Copy");
+
+        JPanel wrapPrice = new JPanel(new BorderLayout(5, 0));
+        wrapPrice.add(fieldPrice, BorderLayout.CENTER);
+        wrapPrice.add(btnCopyPrice, BorderLayout.EAST);
 
         JLabel labelSeller = new JLabel("Robux seller: ");
 
@@ -61,13 +84,13 @@ public class MainFrame extends JFrame {
 
 
         panel.add(labelClean);
-        panel.add(fieldClean);
+        panel.add(wrapClean);
 
         panel.add(labelGamepass);
-        panel.add(fieldGamepass);
+        panel.add(wrapGamepass);
 
         panel.add(labelPrice);
-        panel.add(fieldPrice);
+        panel.add(wrapPrice);
 
         panel.add(labelSeller);
         panel.add(sellerBox);
@@ -121,11 +144,27 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {addSeller();}
         };
 
+        ActionListener actionListenerCopyAll = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == btnCopyClean) {
+                    copyToClipboard(fieldClean.getText());
+                } else if (e.getSource() == btnCopyGamepass) {
+                    copyToClipboard(fieldGamepass.getText());
+                } else if (e.getSource() == btnCopyPrice) {
+                    copyToClipboard(fieldPrice.getText());
+                }
+            }
+        };
+
         fieldClean.getDocument().addDocumentListener(documentListenerClean);
         fieldGamepass.getDocument().addDocumentListener(documentListenerGamepass);
         fieldPrice.getDocument().addDocumentListener(documentListenerPrice);
         sellerBox.addActionListener(actionListenerBox);
         btnAddSeller.addActionListener(actionListenerSeller);
+        btnCopyClean.addActionListener(actionListenerCopyAll);
+        btnCopyGamepass.addActionListener(actionListenerCopyAll);
+        btnCopyPrice.addActionListener(actionListenerCopyAll);
 
     }
 
@@ -231,6 +270,14 @@ public class MainFrame extends JFrame {
 
             listaVendedores.add(newSeller);
             sellerBox.addItem(newSeller);
+        }
+    }
+
+    private void copyToClipboard(String text) {
+        if (text != null &&  !text.isEmpty()) {
+            StringSelection stringSelection = new StringSelection(text);
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
         }
     }
 
