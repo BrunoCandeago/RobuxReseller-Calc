@@ -21,12 +21,12 @@ public class MainFrame extends JFrame {
     private JButton btnCopyGamepass;
     private JButton btnCopyPrice;
 
-    private List<Seller> listaVendedores;
+    private List<Seller> sellerList;
 
-    private boolean calculando = false;
+    private boolean isCalculating = false;
 
-    public MainFrame(List<Seller> listaVendedores) {
-        this.listaVendedores = listaVendedores;
+    public MainFrame(List<Seller> sellerList) {
+        this.sellerList = sellerList;
 
         setTitle("RobuxReseller Calc");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -44,7 +44,7 @@ public class MainFrame extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5, 2, 10, 10));
 
-        JLabel labelClean = new JLabel("Robux limpios: ");
+        JLabel labelClean = new JLabel("Clean Robux: ");
         fieldClean = new JTextField(10);
         ((javax.swing.text.AbstractDocument) fieldClean.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
 
@@ -54,7 +54,7 @@ public class MainFrame extends JFrame {
         wrapClean.add(fieldClean, BorderLayout.CENTER);
         wrapClean.add(btnCopyClean, BorderLayout.EAST);
 
-        JLabel labelGamepass = new JLabel("Robux gamepass: ");
+        JLabel labelGamepass = new JLabel("Gamepass Robux: ");
         fieldGamepass = new JTextField(10);
         ((javax.swing.text.AbstractDocument) fieldGamepass.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
 
@@ -64,7 +64,7 @@ public class MainFrame extends JFrame {
         wrapGamepass.add(fieldGamepass, BorderLayout.CENTER);
         wrapGamepass.add(btnCopyGamepass, BorderLayout.EAST);
 
-        JLabel labelPrice = new JLabel("Robux precio: ");
+        JLabel labelPrice = new JLabel("Price: ");
         fieldPrice = new JTextField(10);
         ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
 
@@ -74,10 +74,10 @@ public class MainFrame extends JFrame {
         wrapPrice.add(fieldPrice, BorderLayout.CENTER);
         wrapPrice.add(btnCopyPrice, BorderLayout.EAST);
 
-        JLabel labelSeller = new JLabel("Robux seller: ");
+        JLabel labelSeller = new JLabel("Seller: ");
 
         sellerBox = new JComboBox<>();
-        for (Seller s : listaVendedores) {
+        for (Seller s : sellerList) {
             sellerBox.addItem(s);
         }
 
@@ -107,38 +107,36 @@ public class MainFrame extends JFrame {
     private void initListeners() {
         DocumentListener documentListenerClean = new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {}
-            public void insertUpdate(DocumentEvent e) {
-                actualizarDesdeLimpios();
-            }
+            public void insertUpdate(DocumentEvent e) { updateFromClean(); }
             public void removeUpdate(DocumentEvent e) {
-                actualizarDesdeLimpios();
+                updateFromClean();
             }
         };
 
         DocumentListener documentListenerGamepass = new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {}
             public void insertUpdate(DocumentEvent e) {
-                actualizarDesdeGamepass();
+                updateFromGamepass();
             }
             public void removeUpdate(DocumentEvent e) {
-                actualizarDesdeGamepass();
+                updateFromGamepass();
             }
         };
 
         DocumentListener documentListenerPrice = new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {}
             public void insertUpdate(DocumentEvent e) {
-                actualizarDesdePrecio();
+                updateFromPrice();
             }
             public void removeUpdate(DocumentEvent e) {
-                actualizarDesdePrecio();
+                updateFromPrice();
             }
         };
 
         ActionListener actionListenerBox = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                actualizarDesdeLimpios();
+                updateFromClean();
             }
         };
 
@@ -171,15 +169,15 @@ public class MainFrame extends JFrame {
 
     }
 
-    private void actualizarDesdeLimpios() {
-        if (calculando) {
+    private void updateFromClean() {
+        if (isCalculating) {
             return;
         }
 
         SwingUtilities.invokeLater(() -> {
         try {
 
-            calculando = true;
+            isCalculating = true;
 
             long textClean = Long.parseLong(fieldClean.getText());
             Calculator calculator = new Calculator();
@@ -195,13 +193,13 @@ public class MainFrame extends JFrame {
             fieldGamepass.setText("");
             fieldPrice.setText("");
         } finally {
-            calculando = false;
+            isCalculating = false;
         }
     });
         }
 
-    private void actualizarDesdeGamepass() {
-        if (calculando) {
+    private void updateFromGamepass() {
+        if (isCalculating) {
             return;
         }
 
@@ -209,7 +207,7 @@ public class MainFrame extends JFrame {
 
             try {
 
-                calculando = true;
+                isCalculating = true;
 
                 long textGamepass = Long.parseLong(fieldGamepass.getText());
                 Calculator calculator = new Calculator();
@@ -225,20 +223,20 @@ public class MainFrame extends JFrame {
                 fieldClean.setText("");
                 fieldPrice.setText("");
             } finally {
-                calculando = false;
+                isCalculating = false;
             }
         });
     }
 
-    private void actualizarDesdePrecio() {
-        if (calculando) {
+    private void updateFromPrice() {
+        if (isCalculating) {
             return;
         }
 
         SwingUtilities.invokeLater(() -> {
             try {
 
-                calculando = true;
+                isCalculating = true;
 
                 long textPrice = Long.parseLong(fieldPrice.getText());
                 Calculator calculator = new Calculator();
@@ -254,13 +252,13 @@ public class MainFrame extends JFrame {
                 fieldGamepass.setText("");
                 fieldClean.setText("");
             } finally {
-                calculando = false;
+                isCalculating = false;
             }
         });
     }
 
     private void addSeller() {
-        AddSellerDialog sellerDialog = new AddSellerDialog(this, true, listaVendedores.size() + 1);
+        AddSellerDialog sellerDialog = new AddSellerDialog(this, true, sellerList.size() + 1);
         sellerDialog.setVisible(true);
 
         if (sellerDialog.isSaved()) {
@@ -271,7 +269,7 @@ public class MainFrame extends JFrame {
 
             Seller newSeller = new Seller(newName, newPriceDouble);
 
-            listaVendedores.add(newSeller);
+            sellerList.add(newSeller);
             sellerBox.addItem(newSeller);
         }
     }

@@ -50,7 +50,7 @@ public class NumericLimitFilter extends DocumentFilter {
             return false;
         }
 
-        int futureLenght = (currentLength - lengthToRemove) + newText.length();
-        return futureLenght <= limit;
+        int futureLength = (currentLength - lengthToRemove) + newText.length();
+        return futureLength <= limit;
         }
 }

@@ -20,60 +20,60 @@ public class Main {
             System.err.println("Failed to initialize LaF");
         }
 
-        File archivoFisico = new File("config.properties");
+        File configFile = new File("config.properties");
 
-        if (!archivoFisico.exists()) {
-            System.out.println("No se encontro el archivo. Creando configuracion por defecto...");
+        if (!configFile.exists()) {
+            System.out.println("File not found. Creating default configuration...");
             try {
-                FileWriter escritor = new FileWriter(archivoFisico);
-                escritor.write("seller1.name=Base\n");
-                escritor.write("seller1.pricePer80Robux=1100.0\n");
-                escritor.close();
+                FileWriter writer = new FileWriter(configFile);
+                writer.write("seller1.name=Base\n");
+                writer.write("seller1.pricePer80Robux=1100.0\n");
+                writer.close();
             } catch (IOException e) {
-                System.out.println("Error al escribir el archivo.");
+                System.out.println("Error writing the file.");
                 System.exit(1);
             }
         }
 
         Properties config = new Properties();
-        List<Seller> listaVendedores = new ArrayList<>();
+        List<Seller> sellerList = new ArrayList<>();
 
         try {
-            FileInputStream archivo = new FileInputStream("config.properties");
-            config.load(archivo);
-            archivo.close();
+            FileInputStream inputStream = new FileInputStream("config.properties");
+            config.load(inputStream);
+            inputStream.close();
 
             int i = 1;
 
             while (true) {
-                String nombre = config.getProperty("seller" + i + ".name");
+                String name = config.getProperty("seller" + i + ".name");
                 String priceStr = config.getProperty("seller" + i + ".pricePer80Robux");
 
-                if (nombre == null || priceStr == null) {
+                if (name == null || priceStr == null) {
                     break;
                 }
 
                 double pricePer80Robux = Double.parseDouble(priceStr);
-                Seller seller = new Seller(nombre, pricePer80Robux);
+                Seller seller = new Seller(name, pricePer80Robux);
 
-                listaVendedores.add(seller);
+                sellerList.add(seller);
 
                 i++;
             }
 
-            System.out.println("Vendedores cargados con exito");
+            System.out.println("Sellers loaded successfully.");
 
         } catch (IOException e) {
-            System.out.println("Error al cargar el archivo de configuraciones");
+            System.out.println("Error loading configuration file.");
             System.exit(1);
         }
 
-        System.out.println("Vendedores disponibles:");
-        for (Seller seller : listaVendedores) {
+        System.out.println("Available sellers:");
+        for (Seller seller : sellerList) {
             System.out.println(seller.getName() + " " + seller.getPricePer80Robux());
         }
 
-    MainFrame mainFrame = new MainFrame(listaVendedores);
+    MainFrame mainFrame = new MainFrame(sellerList);
 
     mainFrame.setVisible(true);
 
