@@ -20,7 +20,6 @@ public class MainFrame extends JFrame {
     private JButton btnCopyClean;
     private JButton btnCopyGamepass;
     private JButton btnCopyPrice;
-
     private List<Seller> sellerList;
 
     private boolean isCalculating = false;
@@ -42,7 +41,7 @@ public class MainFrame extends JFrame {
         setLayout(new BorderLayout(10, 10));
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(5, 2, 10, 10));
+        panel.setLayout(new GridLayout(4, 2, 10, 10));
 
         JLabel labelClean = new JLabel("Clean Robux: ");
         fieldClean = new JTextField(10);
@@ -85,6 +84,7 @@ public class MainFrame extends JFrame {
 
         JPanel wrapSeller = new JPanel(new BorderLayout(5, 0));
         wrapSeller.add(sellerBox, BorderLayout.CENTER);
+        wrapSeller.add(btnAddSeller, BorderLayout.EAST);
 
         panel.add(labelClean);
         panel.add(wrapClean);
@@ -97,8 +97,6 @@ public class MainFrame extends JFrame {
 
         panel.add(labelSeller);
         panel.add(wrapSeller);
-
-        panel.add(btnAddSeller);
 
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panel, BorderLayout.NORTH);
@@ -136,6 +134,12 @@ public class MainFrame extends JFrame {
         ActionListener actionListenerBox = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Seller actualSeller = (Seller) sellerBox.getSelectedItem();
+
+                if (actualSeller != null) {
+
+                }
+
                 updateFromClean();
             }
         };

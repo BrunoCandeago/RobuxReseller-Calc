@@ -28,6 +28,6 @@ public class Seller {
 
     @Override
     public String toString() {
-        return getName();
+        return name + " ($" + pricePer80Robux + ")";
     }
 }
