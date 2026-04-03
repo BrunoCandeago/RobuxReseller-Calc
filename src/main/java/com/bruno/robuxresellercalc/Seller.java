@@ -1,4 +1,4 @@
-package com.bruno.calculadora;
+package com.bruno.robuxresellercalc;
 
 public class Seller {
     private String name;

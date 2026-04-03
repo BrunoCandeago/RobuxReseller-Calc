@@ -1,4 +1,4 @@
-package com.bruno.calculadora;
+package com.bruno.robuxresellercalc;
 
 import javax.swing.*;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import com.formdev.flatlaf.*;
+
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 public class Main {

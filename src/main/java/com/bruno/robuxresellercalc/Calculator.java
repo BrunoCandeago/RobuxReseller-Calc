@@ -1,4 +1,4 @@
-package com.bruno.calculadora;
+package com.bruno.robuxresellercalc;
 
 public class Calculator {
     private static final double ROBLOX_TAX_RATE = 0.7;

@@ -1,4 +1,4 @@
-package com.bruno.calculadora;
+package com.bruno.robuxresellercalc;
 
 import javax.swing.*;
 import java.awt.*;
