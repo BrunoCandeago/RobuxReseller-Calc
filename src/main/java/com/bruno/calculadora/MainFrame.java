@@ -29,12 +29,13 @@ public class MainFrame extends JFrame {
         this.listaVendedores = listaVendedores;
 
         setTitle("RobuxReseller Calc");
-        setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
         initUI();
         initListeners();
+
+        pack();
+        setLocationRelativeTo(null);
     }
 
     private void initUI() {
@@ -82,6 +83,8 @@ public class MainFrame extends JFrame {
 
         btnAddSeller = new JButton("Add Seller");
 
+        JPanel wrapSeller = new JPanel(new BorderLayout(5, 0));
+        wrapSeller.add(sellerBox, BorderLayout.CENTER);
 
         panel.add(labelClean);
         panel.add(wrapClean);
@@ -93,7 +96,7 @@ public class MainFrame extends JFrame {
         panel.add(wrapPrice);
 
         panel.add(labelSeller);
-        panel.add(sellerBox);
+        panel.add(wrapSeller);
 
         panel.add(btnAddSeller);
 
