@@ -76,6 +76,13 @@ public class AddSellerDialog extends javax.swing.JDialog {
             return;
         }
 
+        try {
+            Double.parseDouble(price);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid numerical price", "Invalid Price", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         String nameLine = "seller" + sellerId + ".name=" + name;
         String priceLine = "seller" + sellerId + ".pricePer80Robux=" + price;
 
