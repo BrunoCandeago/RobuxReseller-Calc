@@ -71,6 +71,11 @@ public class AddSellerDialog extends javax.swing.JDialog {
         String name = getSellerName();
         String price = getSellerPrice();
 
+        if (name.trim().isEmpty() || price.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill all the fields", "Missing Data", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String nameLine = "seller" + sellerId + ".name=" + name;
         String priceLine = "seller" + sellerId + ".pricePer80Robux=" + price;
 
