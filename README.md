@@ -26,7 +26,7 @@ This application solves that problem by automating the math. You simply type the
 - [x] Input validation and overflow protection
 - [x] Dynamic seller dropdown integration
 - [x] Add "Copy to Clipboard" buttons
-- [ ] Modernize UI
+- [x] Modernize UI
 - [ ] Package release as a standalone `.exe` for Windows
 
 ## 🔮 Future Scope (Backlog)
