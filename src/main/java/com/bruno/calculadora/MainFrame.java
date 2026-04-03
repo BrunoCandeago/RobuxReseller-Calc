@@ -45,7 +45,7 @@ public class MainFrame extends JFrame {
 
         JLabel labelClean = new JLabel("Clean Robux: ");
         fieldClean = new JTextField(10);
-        ((javax.swing.text.AbstractDocument) fieldClean.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
+        ((javax.swing.text.AbstractDocument) fieldClean.getDocument()).setDocumentFilter(new NumericLimitFilter(10, false));
 
         btnCopyClean = new JButton("Copy");
 
@@ -55,7 +55,7 @@ public class MainFrame extends JFrame {
 
         JLabel labelGamepass = new JLabel("Gamepass Robux: ");
         fieldGamepass = new JTextField(10);
-        ((javax.swing.text.AbstractDocument) fieldGamepass.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
+        ((javax.swing.text.AbstractDocument) fieldGamepass.getDocument()).setDocumentFilter(new NumericLimitFilter(10, false));
 
         btnCopyGamepass = new JButton("Copy");
 
@@ -65,7 +65,7 @@ public class MainFrame extends JFrame {
 
         JLabel labelPrice = new JLabel("Price: ");
         fieldPrice = new JTextField(10);
-        ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
+        ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10, false));
 
         btnCopyPrice = new JButton("Copy");
 
@@ -269,7 +269,7 @@ public class MainFrame extends JFrame {
             String newName = sellerDialog.getSellerName();
             String newPrice = sellerDialog.getSellerPrice();
 
-            double newPriceDouble = Double.parseDouble(newPrice);
+            double newPriceDouble = Double.parseDouble(newPrice.replace(",","."));
 
             Seller newSeller = new Seller(newName, newPriceDouble);
 

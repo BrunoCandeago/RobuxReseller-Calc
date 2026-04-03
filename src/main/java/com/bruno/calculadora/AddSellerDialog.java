@@ -43,7 +43,7 @@ public class AddSellerDialog extends javax.swing.JDialog {
 
         JLabel labelPrice = new JLabel("PricePer80Robux:");
         fieldPrice = new JTextField();
-        ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10));
+        ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10, true));
 
         btnSave = new JButton("Save changes");
 
@@ -76,15 +76,17 @@ public class AddSellerDialog extends javax.swing.JDialog {
             return;
         }
 
+        String sanitizedPrice = price.replace(",", ".");
+
         try {
-            Double.parseDouble(price);
+            Double.parseDouble(sanitizedPrice);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Please enter a valid numerical price", "Invalid Price", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         String nameLine = "seller" + sellerId + ".name=" + name;
-        String priceLine = "seller" + sellerId + ".pricePer80Robux=" + price;
+        String priceLine = "seller" + sellerId + ".pricePer80Robux=" + sanitizedPrice;
 
         try (FileWriter fw = new FileWriter(CONFIG_FILE, true);
             BufferedWriter bw = new BufferedWriter(fw)) {
