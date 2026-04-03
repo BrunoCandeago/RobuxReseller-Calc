@@ -12,7 +12,7 @@ import com.formdev.flatlaf.*;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 
 public class Main {
-    static void main() {
+    public static void main(String[] args) {
 
         try {
             UIManager.setLookAndFeel(new FlatMacDarkLaf());
@@ -61,16 +61,9 @@ public class Main {
                 i++;
             }
 
-            System.out.println("Sellers loaded successfully.");
-
         } catch (IOException e) {
             System.out.println("Error loading configuration file.");
             System.exit(1);
-        }
-
-        System.out.println("Available sellers:");
-        for (Seller seller : sellerList) {
-            System.out.println(seller.getName() + " " + seller.getPricePer80Robux());
         }
 
     MainFrame mainFrame = new MainFrame(sellerList);
