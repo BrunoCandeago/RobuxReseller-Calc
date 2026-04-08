@@ -12,7 +12,6 @@ This application solves that problem by automating the math. You simply type the
 **No installation required!**
 1. Download the latest `.exe` file from the [Releases](https://github.com/BrunoCandeago/RobuxReseller-Calc/releases) tab.
 2. Double-click the file to open the calculator.
-3. *Note: The app will automatically create a small `config.properties` file in the same folder to save your rates. Don't delete it!*
 
 ## 📖 How to Use
 
