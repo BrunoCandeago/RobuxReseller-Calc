@@ -49,7 +49,7 @@ public class NumericLimitFilter extends DocumentFilter {
     }
 
     private boolean isValid(String futureText) {
-            if (futureText.isEmpty()) return false;
+            if (futureText.isEmpty()) return true;
 
             if (futureText.length() > limit) return false;
 

@@ -9,6 +9,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.FileWriter;
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class MainFrame extends JFrame {
         formPanel.setLayout(new GridLayout(4, 2, 10, 10));
 
         JLabel labelClean = new JLabel("Clean Robux: ");
-        fieldClean = new JTextField(10);
+        fieldClean = new JTextField("0",10);
         ((javax.swing.text.AbstractDocument) fieldClean.getDocument()).setDocumentFilter(new NumericLimitFilter(10, false));
 
         btnCopyClean = new JButton("Copy");
@@ -58,7 +60,7 @@ public class MainFrame extends JFrame {
         wrapClean.add(btnCopyClean, BorderLayout.EAST);
 
         JLabel labelGamepass = new JLabel("Gamepass Robux: ");
-        fieldGamepass = new JTextField(10);
+        fieldGamepass = new JTextField("0",10);
         ((javax.swing.text.AbstractDocument) fieldGamepass.getDocument()).setDocumentFilter(new NumericLimitFilter(10, false));
 
         btnCopyGamepass = new JButton("Copy");
@@ -68,7 +70,7 @@ public class MainFrame extends JFrame {
         wrapGamepass.add(btnCopyGamepass, BorderLayout.EAST);
 
         JLabel labelPrice = new JLabel("Price: ");
-        fieldPrice = new JTextField(10);
+        fieldPrice = new JTextField("0",10);
         ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10, false));
 
         btnCopyPrice = new JButton("Copy");
@@ -171,9 +173,30 @@ public class MainFrame extends JFrame {
             }
         };
 
+        FocusAdapter zeroHandler = new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                JTextField field = (JTextField) e.getSource();
+                if (field.getText().equals("0")) {
+                    field.setText("");
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                JTextField field = (JTextField) e.getSource();
+                if (field.getText().isEmpty()) {
+                    field.setText("0");
+                    updateFromClean();
+                }
+            }
+        };
+
         fieldClean.getDocument().addDocumentListener(documentListenerClean);
+        fieldClean.addFocusListener(zeroHandler);
         fieldGamepass.getDocument().addDocumentListener(documentListenerGamepass);
+        fieldGamepass.addFocusListener(zeroHandler);
         fieldPrice.getDocument().addDocumentListener(documentListenerPrice);
+        fieldPrice.addFocusListener(zeroHandler);
         sellerBox.addActionListener(actionListenerBox);
         btnAddSeller.addActionListener(actionListenerSeller);
         btnCopyClean.addActionListener(actionListenerCopyAll);
@@ -194,7 +217,8 @@ public class MainFrame extends JFrame {
 
             isCalculating = true;
 
-            long textClean = Long.parseLong(fieldClean.getText());
+            String rawText = fieldClean.getText();
+            long textClean = rawText.isEmpty() ? 0 : Long.parseLong(rawText);
             Calculator calculator = new Calculator();
             Seller actualSeller = (Seller) sellerBox.getSelectedItem();
 
@@ -224,7 +248,8 @@ public class MainFrame extends JFrame {
 
                 isCalculating = true;
 
-                long textGamepass = Long.parseLong(fieldGamepass.getText());
+                String rawText = fieldGamepass.getText();
+                long textGamepass = rawText.isEmpty() ? 0 : Long.parseLong(rawText);
                 Calculator calculator = new Calculator();
                 Seller actualSeller = (Seller) sellerBox.getSelectedItem();
 
@@ -253,7 +278,8 @@ public class MainFrame extends JFrame {
 
                 isCalculating = true;
 
-                long textPrice = Long.parseLong(fieldPrice.getText());
+                String rawText = fieldPrice.getText();
+                long textPrice = rawText.isEmpty() ? 0 : Long.parseLong(rawText);
                 Calculator calculator = new Calculator();
                 Seller actualSeller = (Seller) sellerBox.getSelectedItem();
 
