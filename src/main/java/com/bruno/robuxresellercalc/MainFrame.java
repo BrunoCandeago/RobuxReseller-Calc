@@ -330,6 +330,14 @@ public class MainFrame extends JFrame {
             return;
         }
 
+        if (selectedSeller.getId() == 1) {
+            JOptionPane.showMessageDialog(this,
+                    "The 'Base' seller cannot be deleted as it is required for default calculations.",
+                    "Action Denied",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         int confirm = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to delete '" + selectedSeller.getName() + "'?",
                 "Confirm deletion",
