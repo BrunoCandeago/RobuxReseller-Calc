@@ -33,7 +33,7 @@ public class MainFrame extends JFrame {
     public MainFrame(List<Seller> sellerList) {
         this.sellerList = sellerList;
 
-        setTitle("RobuxReseller Calc");
+        setTitle("Robux Reseller Calculator");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         initUI();
@@ -222,11 +222,11 @@ public class MainFrame extends JFrame {
             Calculator calculator = new Calculator();
             Seller actualSeller = (Seller) sellerBox.getSelectedItem();
 
-            long resultadoGamepass = calculator.calculateGamepassFromClean(textClean);
-            long resultadoPrecio = calculator.calculatePriceFromClean(textClean, actualSeller);
+            long gamepassResult = calculator.calculateGamepassFromClean(textClean);
+            long priceResult = calculator.calculatePriceFromClean(textClean, actualSeller);
 
-            fieldGamepass.setText(String.valueOf(resultadoGamepass));
-            fieldPrice.setText(String.valueOf(resultadoPrecio));
+            fieldGamepass.setText(String.valueOf(gamepassResult));
+            fieldPrice.setText(String.valueOf(priceResult));
 
         } catch (NumberFormatException ex) {
             fieldGamepass.setText("");
@@ -253,11 +253,11 @@ public class MainFrame extends JFrame {
                 Calculator calculator = new Calculator();
                 Seller actualSeller = (Seller) sellerBox.getSelectedItem();
 
-                long resultadoClean = calculator.calculateCleanFromGamepass(textGamepass);
-                long resultadoPrecio = calculator.calculatePriceFromGamepass(textGamepass, actualSeller);
+                long cleanResult = calculator.calculateCleanFromGamepass(textGamepass);
+                long priceResult = calculator.calculatePriceFromGamepass(textGamepass, actualSeller);
 
-                fieldClean.setText(String.valueOf(resultadoClean));
-                fieldPrice.setText(String.valueOf(resultadoPrecio));
+                fieldClean.setText(String.valueOf(cleanResult));
+                fieldPrice.setText(String.valueOf(priceResult));
 
             } catch (NumberFormatException ex) {
                 fieldClean.setText("");
@@ -283,11 +283,11 @@ public class MainFrame extends JFrame {
                 Calculator calculator = new Calculator();
                 Seller actualSeller = (Seller) sellerBox.getSelectedItem();
 
-                long resultadoGamepass = calculator.calculateGamepassFromPrice(textPrice, actualSeller);
-                long resultadoClean = calculator.calculateCleanFromPrice(textPrice, actualSeller);
+                long gamepassResult = calculator.calculateGamepassFromPrice(textPrice, actualSeller);
+                long cleanResult = calculator.calculateCleanFromPrice(textPrice, actualSeller);
 
-                fieldGamepass.setText(String.valueOf(resultadoGamepass));
-                fieldClean.setText(String.valueOf(resultadoClean));
+                fieldGamepass.setText(String.valueOf(gamepassResult));
+                fieldClean.setText(String.valueOf(cleanResult));
 
             } catch (NumberFormatException ex) {
                 fieldGamepass.setText("");

@@ -38,10 +38,10 @@ public class AddSellerDialog extends javax.swing.JDialog {
 
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3,2,10,10));
-        JLabel labelName = new JLabel("SellerName:");
+        JLabel labelName = new JLabel("Seller Name:");
         fieldName = new JTextField();
 
-        JLabel labelPrice = new JLabel("PricePer80Robux:");
+        JLabel labelPrice = new JLabel("Price Per 80 Robux:");
         fieldPrice = new JTextField();
         ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10, true));
 

@@ -29,14 +29,14 @@ public class Calculator {
     }
 
 
-    public long calculateGamepassFromPrice(double priceInPesos, Seller seller) {
+    public long calculateGamepassFromPrice(double price, Seller seller) {
         double sellerPrice = seller.getPricePer80Robux();
-        double exactPrice = ( priceInPesos * BASE_ROBUX_AMOUNT ) / sellerPrice;
+        double exactPrice = ( price * BASE_ROBUX_AMOUNT ) / sellerPrice;
         return (long) Math.floor(exactPrice);
     }
 
-    public long calculateCleanFromPrice(double priceInPesos, Seller seller) {
-        long gamepassAmount = calculateGamepassFromPrice(priceInPesos, seller);
+    public long calculateCleanFromPrice(double price, Seller seller) {
+        long gamepassAmount = calculateGamepassFromPrice(price, seller);
         return calculateCleanFromGamepass(gamepassAmount);
     }
 
