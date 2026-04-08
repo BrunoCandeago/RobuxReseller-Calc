@@ -14,7 +14,7 @@ public class AddSellerDialog extends javax.swing.JDialog {
     private JTextField fieldName;
     private JTextField fieldPrice;
     private JButton btnSave;
-
+    private long generatedId;
     private int sellerId;
 
     private boolean saved = false;
@@ -85,8 +85,9 @@ public class AddSellerDialog extends javax.swing.JDialog {
             return;
         }
 
-        String nameLine = "seller" + sellerId + ".name=" + name;
-        String priceLine = "seller" + sellerId + ".pricePer80Robux=" + sanitizedPrice;
+        generatedId = System.currentTimeMillis();
+        String nameLine = "seller" + generatedId + ".name=" + name;
+        String priceLine = "seller" + generatedId + ".pricePer80Robux=" + sanitizedPrice;
 
         try (FileWriter fw = new FileWriter(CONFIG_FILE, true);
             BufferedWriter bw = new BufferedWriter(fw)) {
@@ -107,4 +108,5 @@ public class AddSellerDialog extends javax.swing.JDialog {
     public boolean isSaved() {return saved;}
     public String getSellerName() {return fieldName.getText();}
     public String getSellerPrice() {return fieldPrice.getText();}
+    public long getGeneratedId() {return generatedId;}
 }

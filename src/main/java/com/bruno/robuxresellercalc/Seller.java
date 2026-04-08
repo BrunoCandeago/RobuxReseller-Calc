@@ -1,14 +1,18 @@
 package com.bruno.robuxresellercalc;
 
 public class Seller {
+    private long id;
     private String name;
     private double pricePer80Robux;
 
-    public Seller(String name, double pricePer80Robux) {
+    public Seller(long id, String name, double pricePer80Robux) {
+        this.id = id;
         this.name = name;
         this.pricePer80Robux = pricePer80Robux;
 
     }
+
+    public long getId() {return id;}
 
     public String getName() {
         return name;

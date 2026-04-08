@@ -266,12 +266,13 @@ public class MainFrame extends JFrame {
         sellerDialog.setVisible(true);
 
         if (sellerDialog.isSaved()) {
+            long newId = sellerDialog.getGeneratedId();
             String newName = sellerDialog.getSellerName();
             String newPrice = sellerDialog.getSellerPrice();
 
             double newPriceDouble = Double.parseDouble(newPrice.replace(",","."));
 
-            Seller newSeller = new Seller(newName, newPriceDouble);
+            Seller newSeller = new Seller(newId, newName, newPriceDouble);
 
             sellerList.add(newSeller);
             sellerBox.addItem(newSeller);

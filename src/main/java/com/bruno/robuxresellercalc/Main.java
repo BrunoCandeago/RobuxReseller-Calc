@@ -50,8 +50,9 @@ public class Main {
 
                     if (name != null && priceStr != null) {
                         try {
+                            long id = Long.parseLong(prefix.replace("seller",""));
                             double price = Double.parseDouble(priceStr.replace(",", "."));
-                            list.add(new Seller(name, price));
+                            list.add(new Seller(id, name, price));
                         } catch (NumberFormatException e) {
                             System.err.println("Invalid price for: " + name);
                         }
@@ -61,7 +62,7 @@ public class Main {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Could not read config.properties", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        list.sort(java.util.Comparator.comparing(Seller::getName));
+        list.sort(java.util.Comparator.comparingLong(Seller::getId));
         return list;
     }
 }
