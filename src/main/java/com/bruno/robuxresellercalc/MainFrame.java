@@ -44,8 +44,8 @@ public class MainFrame extends JFrame {
     private void initUI() {
         setLayout(new BorderLayout(10, 10));
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4, 2, 10, 10));
+        JPanel formPanel = new JPanel();
+        formPanel.setLayout(new GridLayout(4, 2, 10, 10));
 
         JLabel labelClean = new JLabel("Clean Robux: ");
         fieldClean = new JTextField(10);
@@ -84,33 +84,31 @@ public class MainFrame extends JFrame {
             sellerBox.addItem(s);
         }
 
+        formPanel.add(labelClean);
+        formPanel.add(wrapClean);
+        formPanel.add(labelGamepass);
+        formPanel.add(wrapGamepass);
+        formPanel.add(labelPrice);
+        formPanel.add(wrapPrice);
+        formPanel.add(labelSeller);
+        formPanel.add(sellerBox);
+
         btnAddSeller = new JButton("Add");
         btnEditSeller = new JButton("Edit");
         btnDeleteSeller = new JButton("Delete");
 
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 5, 0));
-        buttonPanel.add(btnAddSeller);
-        buttonPanel.add(btnEditSeller);
-        buttonPanel.add(btnDeleteSeller);
+        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        actionPanel.add(btnAddSeller);
+        actionPanel.add(btnEditSeller);
+        actionPanel.add(btnDeleteSeller);
 
-        JPanel wrapSeller = new JPanel(new BorderLayout(5, 0));
-        wrapSeller.add(sellerBox, BorderLayout.CENTER);
-        wrapSeller.add(buttonPanel, BorderLayout.EAST);
+        JPanel mainPanel = new JPanel(new BorderLayout(10,15));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        panel.add(labelClean);
-        panel.add(wrapClean);
+        mainPanel.add(formPanel, BorderLayout.CENTER);
+        mainPanel.add(actionPanel, BorderLayout.SOUTH);
 
-        panel.add(labelGamepass);
-        panel.add(wrapGamepass);
-
-        panel.add(labelPrice);
-        panel.add(wrapPrice);
-
-        panel.add(labelSeller);
-        panel.add(wrapSeller);
-
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        add(panel, BorderLayout.NORTH);
+        add(mainPanel, BorderLayout.NORTH);
     }
 
     private void initListeners() {
