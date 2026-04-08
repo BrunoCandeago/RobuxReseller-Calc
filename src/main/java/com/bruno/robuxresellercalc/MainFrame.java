@@ -3,11 +3,13 @@ package com.bruno.robuxresellercalc;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileWriter;
 import java.util.List;
 
 public class MainFrame extends JFrame {
@@ -17,6 +19,8 @@ public class MainFrame extends JFrame {
     private JTextField fieldPrice;
     private JComboBox<Seller> sellerBox;
     private JButton btnAddSeller;
+    private JButton btnDeleteSeller;
+    private JButton btnEditSeller;
     private JButton btnCopyClean;
     private JButton btnCopyGamepass;
     private JButton btnCopyPrice;
@@ -80,11 +84,18 @@ public class MainFrame extends JFrame {
             sellerBox.addItem(s);
         }
 
-        btnAddSeller = new JButton("Add Seller");
+        btnAddSeller = new JButton("Add");
+        btnEditSeller = new JButton("Edit");
+        btnDeleteSeller = new JButton("Delete");
+
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 3, 5, 0));
+        buttonPanel.add(btnAddSeller);
+        buttonPanel.add(btnEditSeller);
+        buttonPanel.add(btnDeleteSeller);
 
         JPanel wrapSeller = new JPanel(new BorderLayout(5, 0));
         wrapSeller.add(sellerBox, BorderLayout.CENTER);
-        wrapSeller.add(btnAddSeller, BorderLayout.EAST);
+        wrapSeller.add(buttonPanel, BorderLayout.EAST);
 
         panel.add(labelClean);
         panel.add(wrapClean);
@@ -170,6 +181,8 @@ public class MainFrame extends JFrame {
         btnCopyClean.addActionListener(actionListenerCopyAll);
         btnCopyGamepass.addActionListener(actionListenerCopyAll);
         btnCopyPrice.addActionListener(actionListenerCopyAll);
+        btnEditSeller.addActionListener(e -> editSeller());
+        btnDeleteSeller.addActionListener(e -> deleteSeller());
 
     }
 
@@ -287,4 +300,84 @@ public class MainFrame extends JFrame {
         }
     }
 
-}
+    private void deleteSeller() {
+        Seller selectedSeller = (Seller) sellerBox.getSelectedItem();
+        if (selectedSeller == null) {
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete '" + selectedSeller.getName() + "'?",
+                "Confirm deletion",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            sellerList.remove(selectedSeller);
+            sellerBox.removeItem(selectedSeller);
+
+            rewriteConfigFile();
+        }
+    }
+
+    private void rewriteConfigFile() {
+        try (FileWriter writer = new FileWriter("config.properties",false)) {
+            for (Seller seller : sellerList) {
+                writer.write("seller" + seller.getId() + ".name=" + seller.getName() + "\n");
+                writer.write("seller" + seller.getId() + ".pricePer80Robux=" + seller.getPricePer80Robux() + "\n");
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error updating config.properties", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void editSeller() {
+        Seller  selectedSeller = (Seller) sellerBox.getSelectedItem();
+        if (selectedSeller == null) {
+            return;
+        }
+
+        JTextField editNameField = new JTextField(selectedSeller.getName());
+        JTextField editPriceField = new JTextField(String.valueOf(selectedSeller.getPricePer80Robux()));
+
+        ((AbstractDocument) editPriceField.getDocument())
+                .setDocumentFilter(new NumericLimitFilter(10, true));
+
+        JPanel panel = new JPanel(new GridLayout(2,2,5,5));
+        panel.add(new JLabel("New Name:"));
+        panel.add(editNameField);
+        panel.add(new JLabel("New Price:"));
+        panel.add(editPriceField);
+
+        int result = JOptionPane.showConfirmDialog(this, panel,
+                "Edit Seller", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+        if (result == JOptionPane.OK_OPTION) {
+            String newName = editNameField.getText().trim();
+            String newPriceStr = editPriceField.getText().trim().replace(",",".");
+
+            if (newName.isEmpty() || newPriceStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please fill all the fields", "Missing data", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                double newPrice = Double.parseDouble(newPriceStr);
+
+                selectedSeller.setName(newName);
+                selectedSeller.setPricePer80Robux(newPrice);
+
+                int index = sellerBox.getSelectedIndex();
+                sellerBox.removeItemAt(index);
+                sellerBox.insertItemAt(selectedSeller, index);
+                sellerBox.setSelectedIndex(index);
+
+                rewriteConfigFile();
+                updateFromClean();
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid numerical price.", "Invalid Price", JOptionPane.ERROR_MESSAGE);
+            }
+            }
+        }
+    }
