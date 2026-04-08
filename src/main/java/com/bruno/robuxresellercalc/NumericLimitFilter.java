@@ -17,67 +17,50 @@ public class NumericLimitFilter extends DocumentFilter {
         @Override
         public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
             if (string == null) return;
-
-            if (isValid(fb, fb.getDocument().getLength(),0, string)) {
-                super.insertString(fb, offset, string, attr);
-            } else {
-                Toolkit.getDefaultToolkit().beep();
+            handleTextChange(fb, offset, 0, string, attr);
         }
-    }
+
 
     @Override
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attr) throws BadLocationException {
         if (text == null) text = "";
 
-        if (isValid(fb, fb.getDocument().getLength(),length, text)) {
-            super.replace(fb, offset, length, text, attr);
-        } else {
-            Toolkit.getDefaultToolkit().beep();
-        }
+        handleTextChange(fb, offset, length, text, attr);
     }
 
     @Override
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
-            super.remove(fb, offset, length);
+        handleTextChange(fb, offset, length, "", null);
     }
 
 
-    private boolean isValid(FilterBypass fb, int currentLength, int lengthToRemove, String newText) {
-            if (newText.isEmpty()) {
-                return true;
+    private void handleTextChange(FilterBypass fb, int offset, int length, String text, AttributeSet attr) throws BadLocationException {
+            String currentText = fb.getDocument().getText(0, fb.getDocument().getLength());
+
+            StringBuilder sb = new StringBuilder(currentText);
+            sb.replace(offset, offset + length, text);
+            String futureText = sb.toString();
+
+            if (isValid(futureText)) {
+                super.replace(fb, offset, length, text, attr);
+            } else  {
+                Toolkit.getDefaultToolkit().beep();
+            }
+    }
+
+    private boolean isValid(String futureText) {
+            if (futureText.isEmpty()) return false;
+
+            if (futureText.length() > limit) return false;
+
+            String regex;
+            if (allowDecimal) {
+                regex = "^\\d*([.,]\\d{0,2})?$";
+            } else {
+                regex = "^\\d+$";
             }
 
-        String allowedRegex = allowDecimal ? "[0-9.,]+" : "\\d+";
-        if (!newText.matches(allowedRegex)) {
-            return false;
+            return futureText.matches(regex);
         }
 
-        if (allowDecimal) {
-            try {
-                String currentText = fb.getDocument().getText(0, fb.getDocument().getLength());
-
-                StringBuilder sb = new StringBuilder(currentText);
-                sb.insert(currentLength, newText);
-
-                String totalText = sb.toString().replace(",", ".");
-
-                if (!totalText.equals(".") &&  !totalText.equals("")) {
-                    Double.parseDouble(totalText);
-                }
-
-                if (totalText.contains(".")) {
-                    int precision = totalText.length() - totalText.indexOf(".") - 1;
-                    if (precision > 1) {
-                        return false;
-                    }
-                }
-
-            } catch (Exception e) {
-                return false;
-            }
-        }
-
-        int futureLength = (currentLength - lengthToRemove) + newText.length();
-        return futureLength <= limit;
-        }
 }
