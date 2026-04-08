@@ -15,7 +15,7 @@ public class Main {
             System.err.println("Failed to initialize LaF");
         }
 
-        File configFile = new File("config.properties");
+        File configFile = getConfigFile();
 
         if (!configFile.exists()) {
             try (FileWriter writer = new FileWriter(configFile)) {
@@ -64,5 +64,15 @@ public class Main {
         }
         list.sort(java.util.Comparator.comparingLong(Seller::getId));
         return list;
+    }
+
+    public static File getConfigFile() {
+        String userHome = System.getProperty("user.home");
+        File appFolder = new File(userHome, ".robuxcalc");
+
+        if (!appFolder.exists()) {
+            appFolder.mkdir();
+        }
+        return new File(appFolder, "config.properties");
     }
 }

@@ -9,8 +9,6 @@ import java.io.FileWriter;
 
 public class AddSellerDialog extends javax.swing.JDialog {
 
-    private static final String CONFIG_FILE = "config.properties";
-
     private JTextField fieldName;
     private JTextField fieldPrice;
     private JButton btnSave;
@@ -89,7 +87,7 @@ public class AddSellerDialog extends javax.swing.JDialog {
         String nameLine = "seller" + generatedId + ".name=" + name;
         String priceLine = "seller" + generatedId + ".pricePer80Robux=" + sanitizedPrice;
 
-        try (FileWriter fw = new FileWriter(CONFIG_FILE, true);
+        try (FileWriter fw = new FileWriter(Main.getConfigFile(), true);
             BufferedWriter bw = new BufferedWriter(fw)) {
 
             bw.newLine();

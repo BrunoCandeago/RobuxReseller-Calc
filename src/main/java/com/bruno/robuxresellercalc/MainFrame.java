@@ -353,7 +353,7 @@ public class MainFrame extends JFrame {
     }
 
     private void rewriteConfigFile() {
-        try (FileWriter writer = new FileWriter("config.properties",false)) {
+        try (FileWriter writer = new FileWriter(Main.getConfigFile(),false)) {
             for (Seller seller : sellerList) {
                 writer.write("seller" + seller.getId() + ".name=" + seller.getName() + "\n");
                 writer.write("seller" + seller.getId() + ".pricePer80Robux=" + seller.getPricePer80Robux() + "\n");
