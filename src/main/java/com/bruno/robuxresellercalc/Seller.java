@@ -1,14 +1,17 @@
 package com.bruno.robuxresellercalc;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 public class Seller {
     private long id;
     private String name;
-    private double pricePer80Robux;
+    private TreeMap<Long,Double> tiers;
 
-    public Seller(long id, String name, double pricePer80Robux) {
+    public Seller(long id, String name) {
         this.id = id;
         this.name = name;
-        this.pricePer80Robux = pricePer80Robux;
+        this.tiers = new TreeMap<>();
 
     }
 
@@ -22,16 +25,26 @@ public class Seller {
         this.name = name;
     }
 
-    public double getPricePer80Robux() {
-        return pricePer80Robux;
+
+    public void addTiers(long maxRobux, double price) {
+        tiers.put(maxRobux,price);
     }
 
-    public void setPricePer80Robux(double pricePer80Robux) {
-        this.pricePer80Robux = pricePer80Robux;
+    public double getUnitPrice(long requestedRobux) {
+        return tiers.ceilingEntry(requestedRobux).getValue();
+    }
+
+    public long getMaxRobuxFromPrice(double price) {
+        for (Map.Entry<Long, Double> rango : tiers.entrySet()) {
+            long possibleRobux = (long) Math.floor(price / rango.getValue());
+
+            if (possibleRobux <= rango.getKey()) return possibleRobux;
+        }
+        return 0;
     }
 
     @Override
     public String toString() {
-        return String.format("%s ($%.2f)", name, pricePer80Robux);
+        return name;
     }
 }
