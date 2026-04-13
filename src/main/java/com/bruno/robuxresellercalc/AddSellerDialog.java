@@ -1,32 +1,75 @@
 package com.bruno.robuxresellercalc;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 public class AddSellerDialog extends javax.swing.JDialog {
 
     private JTextField fieldName;
-    private JTextField fieldPrice;
-    private JButton btnSave;
-    private long generatedId;
-    private int sellerId;
+    private JPanel tiersContainer;
+    private List<TierRow> tierRows;
 
     private boolean saved = false;
+    private String sellerName;
+    private TreeMap<Long, Double> sellerTiers;
+    private long generatedId;
+
+    private class TierRow {
+        JPanel rowPanel;
+        JTextField limitField;
+        JTextField priceField;
+        JButton btnRemove;
+
+        public TierRow() {
+            rowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+            limitField = new JTextField(8);
+
+            ((AbstractDocument) limitField.getDocument()).setDocumentFilter(new NumericLimitFilter(15, false));
+
+            priceField = new JTextField(8);
+
+            ((AbstractDocument) priceField.getDocument()).setDocumentFilter(new NumericLimitFilter(10, true));
+
+            btnRemove = new JButton("X");
+            btnRemove.setMargin(new Insets(2, 5, 2, 5));
+
+            limitField.setToolTipText("Leave blank for the final limit (MAX)");
+
+            rowPanel.add(new JLabel("Below (<):"));
+            rowPanel.add(limitField);
+            rowPanel.add(new JLabel("Price:"));
+            rowPanel.add(priceField);
+            rowPanel.add(btnRemove);
+
+            btnRemove.addActionListener(e -> {
+                tiersContainer.remove(rowPanel);
+                tierRows.remove(this);
+                tiersContainer.revalidate();
+                tiersContainer.repaint();
+            });
+        }
+
+    }
 
     public AddSellerDialog(java.awt.Frame parent, boolean modal, int newId) {
         super(parent, modal);
-        this.sellerId = newId;
+        this.generatedId = newId;
+        this.tierRows = new ArrayList<>();
+        this.sellerTiers = new TreeMap<>();
+
+
         setTitle("Add Seller");
-        setSize(300, 200);
+        setSize(400, 350);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLocationRelativeTo(parent);
 
         initUI();
-        initListeners();
 
     }
 
@@ -34,77 +77,88 @@ public class AddSellerDialog extends javax.swing.JDialog {
     private void initUI() {
         setLayout(new BorderLayout(10, 10));
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3,2,10,10));
-        JLabel labelName = new JLabel("Seller Name:");
-        fieldName = new JTextField();
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+        topPanel.add(new JLabel("Seller Name:"));
+        fieldName = new JTextField(15);
+        topPanel.add(fieldName);
 
-        JLabel labelPrice = new JLabel("Price Per 80 Robux:");
-        fieldPrice = new JTextField();
-        ((javax.swing.text.AbstractDocument) fieldPrice.getDocument()).setDocumentFilter(new NumericLimitFilter(10, true));
+        tiersContainer = new JPanel();
+        tiersContainer.setLayout(new BoxLayout(tiersContainer, BoxLayout.Y_AXIS));
 
-        btnSave = new JButton("Save changes");
+        JScrollPane scrollPane = new JScrollPane(tiersContainer);
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Pricing Tiers (Leave limit blank for MAX)"));
+        scrollPane.setPreferredSize(new Dimension(380, 180));
 
-        panel.add(labelName);
-        panel.add(fieldName);
-        panel.add(labelPrice);
-        panel.add(fieldPrice);
-        panel.add(new JLabel(""));
-        panel.add(btnSave);
+        addNewTierRow();
 
-        panel.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
-        add(panel);
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
+
+        JButton btnAddTier = new JButton("+ Add Tier");
+        JButton btnSave = new JButton("Save Changes");
+
+        btnAddTier.addActionListener(e -> addNewTierRow());
+        btnSave.addActionListener(e -> saveSeller());
+
+        bottomPanel.add(btnAddTier, BorderLayout.WEST);
+        bottomPanel.add(btnSave, BorderLayout.EAST);
+
+        add(topPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
     }
 
-    private void initListeners() {
-        ActionListener actionListenerSave = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {saveSeller();}
-        };
-
-        btnSave.addActionListener(actionListenerSave);
+    private void addNewTierRow() {
+        TierRow newRow = new TierRow();
+        tierRows.add(newRow);
+        tiersContainer.add(newRow.rowPanel);
+        tiersContainer.revalidate();
+        tiersContainer.repaint();
     }
+
 
     private void saveSeller() {
-        String name = getSellerName();
-        String price = getSellerPrice();
+        String name = fieldName.getText().trim();
 
-        if (name.trim().isEmpty() || price.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill all the fields", "Missing Data", JOptionPane.WARNING_MESSAGE);
+        if (name.isEmpty() || tierRows.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please provide a name and at least one tier.", "Missing Data", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        String sanitizedPrice = price.replace(",", ".");
+        sellerTiers.clear();
 
         try {
-            Double.parseDouble(sanitizedPrice);
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Please enter a valid numerical price", "Invalid Price", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+            for (TierRow row : tierRows) {
+                String limitText = row.limitField.getText().trim().toUpperCase();
+                String priceText = row.priceField.getText().trim().replace(",",".");
 
-        generatedId = System.currentTimeMillis();
-        String nameLine = "seller" + generatedId + ".name=" + name;
-        String priceLine = "seller" + generatedId + ".pricePer80Robux=" + sanitizedPrice;
+                if (priceText.isEmpty()) throw new NumberFormatException("Price cannot be empty");
 
-        try (FileWriter fw = new FileWriter(Main.getConfigFile(), true);
-            BufferedWriter bw = new BufferedWriter(fw)) {
+                long limit;
+                if (limitText.isEmpty()) {
+                    limit = Long.MAX_VALUE;
+                } else {
+                    limit = Long.parseLong(limitText) - 1;
+                }
 
-            bw.newLine();
-            bw.write(nameLine);
-            bw.newLine();
-            bw.write(priceLine);
+                double price = Double.parseDouble(priceText);
 
+                sellerTiers.put(limit, price);
+            }
+
+            this.sellerName = name;
+            generatedId = System.currentTimeMillis();
             saved = true;
             dispose();
-        } catch (Exception e) {
-            System.out.println("Error saving the file");
-            e.printStackTrace();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter valid numerical values for limits and prices.", "Invalid Format", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     public boolean isSaved() {return saved;}
     public String getSellerName() {return fieldName.getText();}
-    public String getSellerPrice() {return fieldPrice.getText();}
+    public TreeMap<Long, Double> getSellerTiers() {return sellerTiers; }
     public long getGeneratedId() {return generatedId;}
 }
