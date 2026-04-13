@@ -81,6 +81,15 @@ public class Seller {
         }
     }
 
+    public TreeMap<Long, Double> getTiers() {
+        return tiers;
+    }
+
+    public void clearTiers() {
+        this.tiers.clear();
+    }
+
+
     @Override
     public String toString() {
         return name;

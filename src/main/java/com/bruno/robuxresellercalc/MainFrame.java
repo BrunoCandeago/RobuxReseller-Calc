@@ -361,9 +361,32 @@ public class MainFrame extends JFrame {
     }
 
     private void editSeller() {
-        JOptionPane.showMessageDialog(this,
-                "Edit feature is temporarily disabled while we upgrade to dynamic tiers. Please delete and re-add the seller for now.",
-                "Coming Soon",
-                JOptionPane.INFORMATION_MESSAGE);
+        Seller selectedSeller = (Seller) sellerBox.getSelectedItem();
+        if (selectedSeller == null) return ;
+
+        AddSellerDialog dialog = new AddSellerDialog(this, true, (int) selectedSeller.getId());
+        dialog.setTitle("Edit Seller: " + selectedSeller.getName());
+
+        dialog.loadSellerData(selectedSeller);
+
+        dialog.setVisible(true);
+
+        if (dialog.isSaved()) {
+        selectedSeller.setName(dialog.getSellerName());
+
+        selectedSeller.clearTiers();
+        for (var entry : dialog.getSellerTiers().entrySet()) {
+            selectedSeller.addTiers(entry.getKey(), entry.getValue());
         }
+
+        int index = sellerBox.getSelectedIndex();
+        sellerBox.removeItemAt(index);
+        sellerBox.insertItemAt(selectedSeller, index);
+        sellerBox.setSelectedIndex(index);
+
+        ConfigManager.saveSellers(sellerList);
+        updateFromClean();
+
+        }
+    }
     }

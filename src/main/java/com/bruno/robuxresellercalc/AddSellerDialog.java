@@ -3,10 +3,9 @@ package com.bruno.robuxresellercalc;
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class AddSellerDialog extends javax.swing.JDialog {
@@ -156,6 +155,40 @@ public class AddSellerDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Please enter valid numerical values for limits and prices.", "Invalid Format", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    public void loadSellerData(Seller seller) {
+        fieldName.setText(seller.getName());
+
+        tiersContainer.removeAll();
+        tierRows.clear();
+
+        for (Map.Entry<Long, Double> entry :  seller.getTiers().entrySet()) {
+            TierRow existingRow = new TierRow();
+
+            ((AbstractDocument) existingRow.limitField.getDocument()).setDocumentFilter(null);
+            ((AbstractDocument) existingRow.priceField.getDocument()).setDocumentFilter(null);
+
+            if (entry.getKey() == Long.MAX_VALUE) {
+                existingRow.limitField.setText("");
+            } else {
+                existingRow.limitField.setText(String.valueOf(entry.getKey() + 1));
+            }
+
+            String formattedPrice = String.valueOf(entry.getValue()).replace(".", ",");
+
+            existingRow.priceField.setText(formattedPrice);
+
+            ((AbstractDocument) existingRow.limitField.getDocument()).setDocumentFilter(new NumericLimitFilter(15, false));
+            ((AbstractDocument) existingRow.priceField.getDocument()).setDocumentFilter(new NumericLimitFilter(10, true));
+
+            tierRows.add(existingRow);
+            tiersContainer.add(existingRow.rowPanel);
+        }
+        tiersContainer.revalidate();
+        tiersContainer.repaint();
+    }
+
+
 
     public boolean isSaved() {return saved;}
     public String getSellerName() {return fieldName.getText();}
