@@ -31,7 +31,17 @@ public class Seller {
     }
 
     public double getUnitPrice(long requestedRobux) {
-        return tiers.ceilingEntry(requestedRobux).getValue();
+        if (tiers.isEmpty()) {
+            return 0.0;
+        }
+
+        Map.Entry<Long, Double> entry = tiers.ceilingEntry(requestedRobux);
+
+        if (entry == null) {
+            return tiers.lastEntry().getValue();
+        }
+
+        return entry.getValue();
     }
 
     public long getMaxRobuxFromPrice(double price) {
