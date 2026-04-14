@@ -1,14 +1,17 @@
 package com.bruno.robuxresellercalc;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 public class Seller {
     private long id;
     private String name;
-    private double pricePer80Robux;
+    private TreeMap<Long,Double> tiers;
 
-    public Seller(long id, String name, double pricePer80Robux) {
+    public Seller(long id, String name) {
         this.id = id;
         this.name = name;
-        this.pricePer80Robux = pricePer80Robux;
+        this.tiers = new TreeMap<>();
 
     }
 
@@ -22,16 +25,83 @@ public class Seller {
         this.name = name;
     }
 
-    public double getPricePer80Robux() {
-        return pricePer80Robux;
+
+    public void addTiers(long maxRobux, double price) {
+        tiers.put(maxRobux,price);
     }
 
-    public void setPricePer80Robux(double pricePer80Robux) {
-        this.pricePer80Robux = pricePer80Robux;
+    public double getUnitPrice(long requestedRobux) {
+        if (tiers.isEmpty()) {
+            return 0.0;
+        }
+
+        Map.Entry<Long, Double> entry = tiers.ceilingEntry(requestedRobux);
+
+        if (entry == null) {
+            return tiers.lastEntry().getValue();
+        }
+
+        return entry.getValue();
     }
+
+    public long getMaxRobuxFromPrice(double targetPrice) {
+        if (tiers.isEmpty()) return 0;
+
+        long bestRobux = 0;
+
+        for (Double rate : tiers.values()) {
+            if (rate <= 0) continue;
+
+            long calculatedRobux = (long) (targetPrice / rate);
+            if (getUnitPrice(calculatedRobux) == rate) {
+                if (calculatedRobux > bestRobux) {
+                    bestRobux = calculatedRobux;
+                }
+            }
+        }
+        return bestRobux;
+    }
+
+
+    public String serializeTiers() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Long, Double> entry : tiers.entrySet()) {
+            String limit = (entry.getKey() == Long.MAX_VALUE) ? "MAX" : String.valueOf(entry.getKey());
+
+            sb.append(limit).append(":").append(entry.getValue()).append(",");
+        }
+
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        return sb.toString();
+    }
+
+    public void loadTiersFromString(String tiersString) {
+        this.tiers.clear();
+
+        String[] parts = tiersString.split(",");
+        for (String part : parts) {
+            String[] pair = part.split(":");
+
+            long limit = pair[0].equalsIgnoreCase("MAX") ? Long.MAX_VALUE : Long.parseLong(pair[0]);
+            double price = Double.parseDouble(pair[1]);
+
+            this.addTiers(limit, price);
+        }
+    }
+
+    public TreeMap<Long, Double> getTiers() {
+        return tiers;
+    }
+
+    public void clearTiers() {
+        this.tiers.clear();
+    }
+
 
     @Override
     public String toString() {
-        return String.format("%s ($%.2f)", name, pricePer80Robux);
+        return name;
     }
 }

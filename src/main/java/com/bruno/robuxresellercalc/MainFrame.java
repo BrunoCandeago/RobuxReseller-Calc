@@ -13,6 +13,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.FileWriter;
 import java.util.List;
+import java.util.TreeMap;
 
 public class MainFrame extends JFrame {
 
@@ -145,13 +146,9 @@ public class MainFrame extends JFrame {
         ActionListener actionListenerBox = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Seller actualSeller = (Seller) sellerBox.getSelectedItem();
-
-                if (actualSeller != null) {
-
+                if (sellerBox.getSelectedItem() != null) {
+                    updateFromClean();
                 }
-
-                updateFromClean();
             }
         };
 
@@ -221,6 +218,7 @@ public class MainFrame extends JFrame {
             long textClean = rawText.isEmpty() ? 0 : Long.parseLong(rawText);
             Calculator calculator = new Calculator();
             Seller actualSeller = (Seller) sellerBox.getSelectedItem();
+            if (actualSeller == null) return;
 
             long gamepassResult = calculator.calculateGamepassFromClean(textClean);
             long priceResult = calculator.calculatePriceFromClean(textClean, actualSeller);
@@ -252,6 +250,7 @@ public class MainFrame extends JFrame {
                 long textGamepass = rawText.isEmpty() ? 0 : Long.parseLong(rawText);
                 Calculator calculator = new Calculator();
                 Seller actualSeller = (Seller) sellerBox.getSelectedItem();
+                if (actualSeller == null) return;
 
                 long cleanResult = calculator.calculateCleanFromGamepass(textGamepass);
                 long priceResult = calculator.calculatePriceFromGamepass(textGamepass, actualSeller);
@@ -282,6 +281,7 @@ public class MainFrame extends JFrame {
                 long textPrice = rawText.isEmpty() ? 0 : Long.parseLong(rawText);
                 Calculator calculator = new Calculator();
                 Seller actualSeller = (Seller) sellerBox.getSelectedItem();
+                if (actualSeller == null) return;
 
                 long gamepassResult = calculator.calculateGamepassFromPrice(textPrice, actualSeller);
                 long cleanResult = calculator.calculateCleanFromPrice(textPrice, actualSeller);
@@ -305,14 +305,18 @@ public class MainFrame extends JFrame {
         if (sellerDialog.isSaved()) {
             long newId = sellerDialog.getGeneratedId();
             String newName = sellerDialog.getSellerName();
-            String newPrice = sellerDialog.getSellerPrice();
+            TreeMap<Long, Double> newTiers = sellerDialog.getSellerTiers();
 
-            double newPriceDouble = Double.parseDouble(newPrice.replace(",","."));
+            Seller newSeller = new Seller(newId, newName);
 
-            Seller newSeller = new Seller(newId, newName, newPriceDouble);
+            for (var entry : newTiers.entrySet()) {
+                newSeller.addTiers(entry.getKey(), entry.getValue());
+            }
 
             sellerList.add(newSeller);
             sellerBox.addItem(newSeller);
+
+            ConfigManager.saveSellers(sellerList);
         }
     }
 
@@ -348,68 +352,37 @@ public class MainFrame extends JFrame {
             sellerList.remove(selectedSeller);
             sellerBox.removeItem(selectedSeller);
 
-            rewriteConfigFile();
-        }
-    }
-
-    private void rewriteConfigFile() {
-        try (FileWriter writer = new FileWriter(Main.getConfigFile(),false)) {
-            for (Seller seller : sellerList) {
-                writer.write("seller" + seller.getId() + ".name=" + seller.getName() + "\n");
-                writer.write("seller" + seller.getId() + ".pricePer80Robux=" + seller.getPricePer80Robux() + "\n");
-            }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error updating config.properties", "Error", JOptionPane.ERROR_MESSAGE);
+            ConfigManager.saveSellers(sellerList);
         }
     }
 
     private void editSeller() {
-        Seller  selectedSeller = (Seller) sellerBox.getSelectedItem();
-        if (selectedSeller == null) {
-            return;
+        Seller selectedSeller = (Seller) sellerBox.getSelectedItem();
+        if (selectedSeller == null) return ;
+
+        AddSellerDialog dialog = new AddSellerDialog(this, true, (int) selectedSeller.getId());
+        dialog.setTitle("Edit Seller: " + selectedSeller.getName());
+
+        dialog.loadSellerData(selectedSeller);
+
+        dialog.setVisible(true);
+
+        if (dialog.isSaved()) {
+        selectedSeller.setName(dialog.getSellerName());
+
+        selectedSeller.clearTiers();
+        for (var entry : dialog.getSellerTiers().entrySet()) {
+            selectedSeller.addTiers(entry.getKey(), entry.getValue());
         }
 
-        JTextField editNameField = new JTextField(selectedSeller.getName());
-        JTextField editPriceField = new JTextField(String.valueOf(selectedSeller.getPricePer80Robux()));
+        int index = sellerBox.getSelectedIndex();
+        sellerBox.removeItemAt(index);
+        sellerBox.insertItemAt(selectedSeller, index);
+        sellerBox.setSelectedIndex(index);
 
-        ((AbstractDocument) editPriceField.getDocument())
-                .setDocumentFilter(new NumericLimitFilter(10, true));
+        ConfigManager.saveSellers(sellerList);
+        updateFromClean();
 
-        JPanel panel = new JPanel(new GridLayout(2,2,5,5));
-        panel.add(new JLabel("New Name:"));
-        panel.add(editNameField);
-        panel.add(new JLabel("New Price:"));
-        panel.add(editPriceField);
-
-        int result = JOptionPane.showConfirmDialog(this, panel,
-                "Edit Seller", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-        if (result == JOptionPane.OK_OPTION) {
-            String newName = editNameField.getText().trim();
-            String newPriceStr = editPriceField.getText().trim().replace(",",".");
-
-            if (newName.isEmpty() || newPriceStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please fill all the fields", "Missing data", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            try {
-                double newPrice = Double.parseDouble(newPriceStr);
-
-                selectedSeller.setName(newName);
-                selectedSeller.setPricePer80Robux(newPrice);
-
-                int index = sellerBox.getSelectedIndex();
-                sellerBox.removeItemAt(index);
-                sellerBox.insertItemAt(selectedSeller, index);
-                sellerBox.setSelectedIndex(index);
-
-                rewriteConfigFile();
-                updateFromClean();
-
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid numerical price.", "Invalid Price", JOptionPane.ERROR_MESSAGE);
-            }
-            }
         }
+    }
     }
