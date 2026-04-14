@@ -146,13 +146,9 @@ public class MainFrame extends JFrame {
         ActionListener actionListenerBox = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Seller actualSeller = (Seller) sellerBox.getSelectedItem();
-
-                if (actualSeller != null) {
-
+                if (sellerBox.getSelectedItem() != null) {
+                    updateFromClean();
                 }
-
-                updateFromClean();
             }
         };
 

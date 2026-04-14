@@ -29,6 +29,8 @@ public class AddSellerDialog extends javax.swing.JDialog {
             rowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
             limitField = new JTextField(8);
 
+            limitField.putClientProperty("JTextField.placeholderText", "MAX");
+
             ((AbstractDocument) limitField.getDocument()).setDocumentFilter(new NumericLimitFilter(15, false));
 
             priceField = new JTextField(8);
@@ -38,7 +40,7 @@ public class AddSellerDialog extends javax.swing.JDialog {
             btnRemove = new JButton("X");
             btnRemove.setMargin(new Insets(2, 5, 2, 5));
 
-            limitField.setToolTipText("Leave blank for the final limit (MAX)");
+            limitField.setToolTipText("Leave blank for MAX limit");
 
             rowPanel.add(new JLabel("Below (<):"));
             rowPanel.add(limitField);
@@ -86,8 +88,9 @@ public class AddSellerDialog extends javax.swing.JDialog {
         tiersContainer.setLayout(new BoxLayout(tiersContainer, BoxLayout.Y_AXIS));
 
         JScrollPane scrollPane = new JScrollPane(tiersContainer);
-        scrollPane.setBorder(BorderFactory.createTitledBorder("Pricing Tiers (Leave limit blank for MAX)"));
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Pricing Tiers"));
         scrollPane.setPreferredSize(new Dimension(380, 180));
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         addNewTierRow();
 
@@ -106,6 +109,8 @@ public class AddSellerDialog extends javax.swing.JDialog {
         add(topPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(bottomPanel, BorderLayout.SOUTH);
+
+        getRootPane().setDefaultButton(btnSave);
     }
 
     private void addNewTierRow() {
@@ -138,10 +143,16 @@ public class AddSellerDialog extends javax.swing.JDialog {
                 if (limitText.isEmpty()) {
                     limit = Long.MAX_VALUE;
                 } else {
-                    limit = Long.parseLong(limitText) - 1;
+                    long parsed = Long.parseLong(limitText);
+                    limit = (parsed > 0) ? parsed - 1: 0;
                 }
 
                 double price = Double.parseDouble(priceText);
+
+                if (price <= 0) {
+                    JOptionPane.showMessageDialog(this, "Price must be greater than 0.", "Invalid Price", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
 
                 sellerTiers.put(limit, price);
             }

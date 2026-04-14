@@ -44,14 +44,24 @@ public class Seller {
         return entry.getValue();
     }
 
-    public long getMaxRobuxFromPrice(double price) {
-        for (Map.Entry<Long, Double> rango : tiers.entrySet()) {
-            long possibleRobux = (long) Math.floor(price / rango.getValue());
+    public long getMaxRobuxFromPrice(double targetPrice) {
+        if (tiers.isEmpty()) return 0;
 
-            if (possibleRobux <= rango.getKey()) return possibleRobux;
+        long bestRobux = 0;
+
+        for (Double rate : tiers.values()) {
+            if (rate <= 0) continue;
+
+            long calculatedRobux = (long) (targetPrice / rate);
+            if (getUnitPrice(calculatedRobux) == rate) {
+                if (calculatedRobux > bestRobux) {
+                    bestRobux = calculatedRobux;
+                }
+            }
         }
-        return 0;
+        return bestRobux;
     }
+
 
     public String serializeTiers() {
         StringBuilder sb = new StringBuilder();
