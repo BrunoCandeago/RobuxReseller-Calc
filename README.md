@@ -11,7 +11,7 @@ This application solves that problem by automating the math. You simply type the
 
 **No installation required!**
 1. Download the latest `.zip` file from the [Releases](https://github.com/BrunoCandeago/RobuxReseller-Calc/releases) tab.
-2. Extract the `.zip` and open the folder
+2. Extract the file.
 3. Double-click the `.exe` to open the calculator.
 
 ## 📖 How to Use
@@ -24,13 +24,13 @@ The calculator works in real-time. You can type in any of the three boxes, and t
 
 Next to every box, there is a **"Copy"** button so you can instantly paste the exact numbers into your chat with the buyer.
 
-## ⚙️ Managing Your Sellers (Suppliers)
+## ⚙️ Managing Your Sellers (Suppliers) & Tiers
 
-You can save different suppliers or pricing tiers (e.g., "Supplier A", "Supplier B", "Premium Rate") so you don't have to type your rates every time.
+You can save different suppliers and set up **Dynamic Pricing Tiers** (e.g., bulk discounts depending on how many Robux are bought) so you don't have to type your rates every time.
 
 Use the buttons at the bottom right:
-* **Add:** Create a new supplier. Enter their name and their price per 80 Robux.
-* **Edit:** Select a supplier from the dropdown list and click Edit to update their name or their current rate.
+* **Add:** Create a new supplier. Enter their name and set up their custom pricing tiers (e.g., set a specific rate for `< 500` Robux, a better rate for `< 2000`, and a `MAX` rate for anything above).
+* **Edit:** Select a supplier from the dropdown list and click Edit to update their name or modify their existing tiers.
 * **Delete:** Remove a supplier you no longer use.
 
 *All changes are saved automatically.*
@@ -40,19 +40,3 @@ Use the buttons at the bottom right:
 * **Java 25**
 * **Java Swing** (GUI Framework)
 * **FlatLaf** (Modern Cross-Platform Look and Feel)
-
-## 🚀 Roadmap (Version 1.0)
-
-> *This project is currently under active development. Below is the plan for the upcoming releases.*
-
-- [x] Core calculation engine (Gamepass/Clean/Price)
-- [x] Input validation and overflow protection
-- [x] Dynamic seller dropdown integration
-- [x] Add "Copy to Clipboard" buttons
-- [x] Modernize UI with FlatLaf
-- [x] Implement Full CRUD for Seller Management
-- [x] Package release as a standalone `.exe` / `.jar` for Windows
-
-## 🔮 Future Scope (Backlog)
-
-* **Tiered Pricing System:** Implement logic to automatically apply bulk discounts and custom rates based on transaction volume.
